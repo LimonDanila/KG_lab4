@@ -1,18 +1,50 @@
 package com.cgvsu.math;
 
-// Это заготовка для собственной библиотеки для работы с линейной алгеброй
-public class Vector3f {
+public class Vector3f extends Vector {
     public Vector3f(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        vector = new float[]{x, y, z};
     }
 
-    public boolean equals(Vector3f other) {
-        // todo: желательно, чтобы это была глобальная константа
-        final float eps = 1e-7f;
-        return Math.abs(x - other.x) < eps && Math.abs(y - other.y) < eps && Math.abs(z - other.z) < eps;
+    public Vector3f add(Vector3f vector) {
+        float[] arr1 = this.vector;
+        float[] arr2 = vector.getVector();
+        return new Vector3f(arr1[0] + arr2[0], arr1[1] + arr2[1], arr1[2] + arr2[2]);
     }
 
-    public float x, y, z;
+    public Vector3f subtract(Vector3f vector) {
+        float[] arr1 = this.vector;
+        float[] arr2 = vector.getVector();
+        return new Vector3f(arr1[0] - arr2[0], arr1[1] - arr2[1], arr1[2] - arr2[2]);
+    }
+
+    public Vector3f multiply(float val) {
+        float[] arr = this.vector;
+        return new Vector3f(arr[0] * val, arr[1] * val, arr[2] * val);
+    }
+
+    public Vector3f div(float val) {
+        float[] arr = this.vector;
+        return new Vector3f(arr[0] / val, arr[1] / val, arr[2] / val);
+    }
+
+    public Vector3f normalize() {
+        float length = this.getLength();
+        return this.div(length);
+    }
+
+    public float dot(Vector3f vector) {
+        float[] arr1 = this.vector;
+        float[] arr2 = vector.getVector();
+        return arr1[0] * arr2[0] + arr1[1] * arr2[1] + arr1[2] * arr2[2];
+    }
+
+    public Vector3f cross(Vector3f vector) {
+        float[] arr1 = this.vector;
+        float[] arr2 = vector.getVector();
+        return new Vector3f(
+                arr1[1] * arr2[2] - arr1[2] * arr2[1],
+                - arr1[0] * arr2[2] + arr1[2] * arr2[0],
+                arr1[0] * arr2[1] - arr1[1] * arr2[0]
+        );
+    }
 }
