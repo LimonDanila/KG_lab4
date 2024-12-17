@@ -1,12 +1,6 @@
 package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.math.*;
@@ -23,12 +17,12 @@ public class RenderEngine {
             final int height)
     {
 
-        Matrix4d modelMatrix1 = rotateScaleTranslate();
-        Matrix4d viewMatrix1 = camera.getViewMatrix();
-        Matrix4d projectionMatrix1 = camera.getProjectionMatrix();
+        Matrix4d modelMatrix = rotateScaleTranslate();
+        Matrix4d viewMatrix = camera.getViewMatrix();
+        Matrix4d projectionMatrix = camera.getProjectionMatrix();
 
-//        Matrix4d modelViewProjectionMatrix = projectionMatrix1.multiply(viewMatrix1.multiply(modelMatrix1));
-        Matrix4d modelViewProjectionMatrix = modelMatrix1.multiply(viewMatrix1).multiply(projectionMatrix1);
+        Matrix4d modelViewProjectionMatrix = projectionMatrix.multiply(viewMatrix).multiply(modelMatrix);
+//        Matrix4d modelViewProjectionMatrix = modelMatrix.multiply(viewMatrix).multiply(projectionMatrix);
 
 
         final int nPolygons = mesh.polygons.size();
