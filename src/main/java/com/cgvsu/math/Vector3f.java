@@ -5,6 +5,18 @@ public class Vector3f extends Vector {
         vector = new float[]{x, y, z};
     }
 
+    public float getX() {
+        return vector[0];
+    }
+
+    public float getY() {
+        return vector[1];
+    }
+
+    public float getZ() {
+        return vector[2];
+    }
+
     public Vector3f add(Vector3f vector) {
         float[] arr1 = this.vector;
         float[] arr2 = vector.getVector();

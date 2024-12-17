@@ -5,6 +5,22 @@ public class Vector4f extends Vector {
         vector = new float[]{x, y, z, w};
     }
 
+    public float getX() {
+        return vector[0];
+    }
+
+    public float getY() {
+        return vector[1];
+    }
+
+    public float getZ() {
+        return vector[2];
+    }
+
+    public float getW() {
+        return vector[3];
+    }
+
     public Vector4f add(Vector4f vector) {
         float[] arr1 = this.vector;
         float[] arr2 = vector.getVector();

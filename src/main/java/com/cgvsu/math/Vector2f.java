@@ -5,6 +5,14 @@ public class Vector2f extends Vector {
         vector = new float[]{x, y};
     }
 
+    public float getX() {
+        return vector[0];
+    }
+
+    public float getY() {
+        return vector[1];
+    }
+
     public Vector2f add(Vector2f vector) {
         float[] arr1 = this.vector;
         float[] arr2 = vector.getVector();

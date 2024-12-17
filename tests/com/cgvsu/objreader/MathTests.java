@@ -108,18 +108,30 @@ class MathTests {
     @Test
     public void testMatrix3dMultiply() {
         Matrix3d matrix1 = new Matrix3d(new float[][]
-                {{1, 2, 3},
+                        {{1, 2, 3},
                         {4, 5, 6},
                         {7, 8, 9}});
         Matrix3d matrix2 = new Matrix3d(new float[][]
+                        {{1, 1, 1},
+                        {2, 1, 3},
+                        {1, 2, 1}});
+        Matrix3d result = matrix1.multiply(matrix2);
+        Matrix3d expectedResult = new Matrix3d(new float[][]
+                        {{8, 9, 10},
+                        {20, 21, 25},
+                        {32, 33, 40}});
+        Assertions.assertTrue(result.equals(expectedResult));
+    }
+
+    @Test
+    public void testMatrix3dMultiplyWithVector() {
+        Matrix3d matrix = new Matrix3d(new float[][]
                 {{1, 2, 3},
                         {4, 5, 6},
                         {7, 8, 9}});
-        Matrix3d result = matrix1.multiply(matrix2);
-        Matrix3d expectedResult = new Matrix3d(new float[][]
-                {{30, 36, 42},
-                        {66, 81, 96},
-                        {102, 126, 150}});
+        Vector3f vector = new Vector3f(2, 3, 1);
+        Vector3f result = matrix.multiply(vector);
+        Vector3f expectedResult = new Vector3f(11, 29, 47);
         Assertions.assertTrue(result.equals(expectedResult));
     }
 

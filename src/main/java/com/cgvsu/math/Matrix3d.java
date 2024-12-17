@@ -38,7 +38,7 @@ public class Matrix3d extends Matrix{
             for (int y = 0; y < arr[0].length; y++) {
                 sum = 0;
                 for (int i = 0; i < arr.length; i++) {
-                    sum += matrix1.getMatrix()[x][i] * this.matrix[i][y];
+                    sum += matrix1.getMatrix()[i][y] * this.matrix[x][i];
                 }
                 arr[x][y] = sum;
             }
