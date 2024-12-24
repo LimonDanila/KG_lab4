@@ -1,5 +1,7 @@
 package com.cgvsu;
 
+import com.cgvsu.model.Light;
+import com.cgvsu.model.Texture;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
@@ -33,6 +35,9 @@ public class GuiController {
 
     private Model mesh = null;
 
+    private Texture texture = null;
+    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
@@ -56,7 +61,7 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh,texture,light, (int) width, (int) height);
             }
         });
 
@@ -84,6 +89,20 @@ public class GuiController {
         } catch (IOException exception) {
 
         }
+    }
+
+    @FXML
+    private void onOpenTextureMenuItemClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.bmp"));
+        fileChooser.setTitle("Load Texture");
+
+        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        texture = new Texture(file.getAbsolutePath());
     }
 
     @FXML
