@@ -138,36 +138,19 @@ public class GuiController {
     @FXML
     public void handlerMouseMove(MouseEvent actionEvent) {
         if (actionEvent.isPrimaryButtonDown()) {
-//            float x;
-//            float y;
-//            float z;
             positionC = positionC.add(new Vector3f((float) 0, (float) (actionEvent.getX() - position.getX()), (float) (actionEvent.getY() - position.getY())));
-//            positionC = positionC.add(new Vector3f(0, 0, 1));
-//            if ((positionC.getY() * Math.PI) / 180 < 1e-6f || 180 - (positionC.getY() * Math.PI) / 180 < 1e-6f) {
-//                x = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180));
-//                y = (float) (positionC.getX() * 1 * Math.sin((positionC.getZ() * Math.PI) / 180));
-//                z = (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180));
-//            } else {
-//                x = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180));
-//                y = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.sin((positionC.getZ() * Math.PI) / 180));
-//                z = (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180));
-//            }
-//            Vector3f newPos = new Vector3f((float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180)),
-//                    (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.sin((positionC.getZ() * Math.PI) / 180)),
-//                    (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180)));
             float x = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180));
             float y = (float) (positionC.getX() * 1 * Math.sin((positionC.getZ() * Math.PI) / 180));
             float z = (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180));
             Vector3f newPos = new Vector3f(x, y, z);
             camera.setPosition(newPos);
             position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
-            position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
         } else if (actionEvent.isSecondaryButtonDown()){
             camera.movePosition(new Vector3f((float) actionEvent.getX() - position.getX(), (float) actionEvent.getY() - position.getY(), 0));
             camera.moveTarget(new Vector3f((float) actionEvent.getX() - position.getX(), (float) actionEvent.getY() - position.getY(), 0));
             position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
         }
-        System.out.println(camera.getPosition().getX() + " " + camera.getPosition().getY() + " " + camera.getPosition().getZ());
+//        System.out.println(camera.getPosition().getX() + " " + camera.getPosition().getY() + " " + camera.getPosition().getZ());
     }
 
     @FXML
