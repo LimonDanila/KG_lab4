@@ -17,7 +17,7 @@ public class RenderEngine {
             final int height)
     {
 
-        Matrix4d modelMatrix = rotateScaleTranslate();
+        Matrix4d modelMatrix = translateRotateScale(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
         Matrix4d viewMatrix = camera.getViewMatrix();
         Matrix4d projectionMatrix = camera.getProjectionMatrix();
 

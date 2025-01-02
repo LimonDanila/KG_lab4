@@ -1,16 +1,49 @@
 package com.cgvsu.render_engine;
 //import javax.vecmath.*;
 import com.cgvsu.math.*;
+import com.cgvsu.model.Model;
+
+import java.util.ArrayList;
 
 public class GraphicConveyor {
 
-    public static Matrix4d rotateScaleTranslate() {
-        float[][] matrix = new float[][]{
+    public static Matrix4d translateRotateScale(Vector3f translate, Vector3f rotate, Vector3f scale) {
+        Matrix4d translateMatrix = new Matrix4d(new float[][] {
+                {1, 0, 0, translate.getX()},
+                {0, 1, 0, translate.getY()},
+                {0, 0, 1, translate.getZ()},
+                {0, 0, 0, 1}
+        });
+        Matrix4d scaleMatrix = new Matrix4d(new float[][]  {
+                {scale.getX(), 0, 0, 0},
+                {0, scale.getY(), 0, 0},
+                {0, 0, scale.getZ(), 0},
+                {0, 0, 0, 1}
+        });
+        Matrix4d rotateMatrix = getRotateMatrix(rotate);
+        return translateMatrix.multiply(rotateMatrix).multiply(scaleMatrix);
+    }
+
+    private static Matrix4d getRotateMatrix(Vector3f rotate) {
+        float alpha = (float) ((rotate.getX() * Math.PI) / 180);
+        float beta = (float) ((rotate.getY() * Math.PI) / 180);
+        float gamma = (float) ((rotate.getZ() * Math.PI) / 180);
+        Matrix4d rotateMatrixX = new Matrix4d(new float[][]{
                 {1, 0, 0, 0},
+                {0, (float) Math.cos(alpha), (float) Math.sin(alpha), 0},
+                {0, (float) -Math.sin(alpha), (float) Math.cos(alpha), 0},
+                {0, 0, 0, 1}});
+        Matrix4d rotateMatrixY = new Matrix4d(new float[][]{
+                {(float) Math.cos(beta), 0, (float) Math.sin(beta), 0},
                 {0, 1, 0, 0},
+                {(float) -Math.sin(beta), 0, (float) Math.cos(beta), 0},
+                {0, 0, 0, 1}});
+        Matrix4d rotateMatrixZ = new Matrix4d(new float[][]{
+                {(float) Math.cos(gamma), (float) Math.sin(gamma), 0, 0},
+                {(float) -Math.sin(gamma), (float) Math.cos(gamma), 0, 0},
                 {0, 0, 1, 0},
-                {0, 0, 0, 1}};
-        return new Matrix4d(matrix);
+                {0, 0, 0, 1}});
+        return rotateMatrixX.multiply(rotateMatrixY).multiply(rotateMatrixZ);
     }
 
     public static Matrix4d lookAt(Vector3f eye, Vector3f target) {

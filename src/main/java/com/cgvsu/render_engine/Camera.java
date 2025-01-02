@@ -45,14 +45,14 @@ public class Camera {
     }
 
     public void moveTarget(final Vector3f translation) {
-        this.target = this.target.add(target);
+        this.target = this.target.add(translation);
     }
 
-    com.cgvsu.math.Matrix4d getViewMatrix() {
+    Matrix4d getViewMatrix() {
         return GraphicConveyor.lookAt(position, target);
     }
 
-    com.cgvsu.math.Matrix4d getProjectionMatrix() {
+    Matrix4d getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
