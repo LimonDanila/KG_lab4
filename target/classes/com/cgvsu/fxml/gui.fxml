@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cgvsu.GuiController" onMouseDragged="#handlerMouseMove" onMousePressed="#handlerMouseClick" onScroll="#handlerScroll">
-    <MenuBar>
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-            <accelerator>
-                <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="F"/>
-            </accelerator>
-            </MenuItem>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Camera Options">
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="UP"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="DOWN"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="LEFT"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="RIGHT"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="W"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="S"/>
-                </accelerator>
-            </MenuItem>
-        </Menu>
-    </MenuBar>
-
-    <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
+<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+    <HBox>
+        <VBox>
+            <MenuBar>
+                <Menu mnemonicParsing="false" text="File">
+                    <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
+                        <accelerator>
+                            <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#onSaveModelMenuItemClick" text="Save Model">
+                        <accelerator>
+                            <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        </accelerator>
+                    </MenuItem>
+                </Menu>
+            </MenuBar>
+            <ScrollPane prefHeight="870" prefWidth="350.0">
+                <VBox>
+                    <TitledPane text="models" prefWidth="350">
+                        <VBox>
+                            <HBox>
+                                <Button text="add" onAction="#onOpenModelMenuItemClick"/>
+                                <Button text="del" onAction="#deleteModel"/>
+                            </HBox>
+                            <ListView fx:id="listView" onMouseClicked="#choiceModel"/>
+                            <Label text="Translation" />
+                            <HBox>
+                                <TextField promptText="x" fx:id="translateX"/>
+                                <TextField promptText="y" fx:id="translateY"/>
+                                <TextField promptText="z" fx:id="translateZ"/>
+                            </HBox>
+                            <Label text="Rotate" />
+                            <HBox>
+                                <TextField promptText="φ" fx:id="rotatePhi"/>
+                                <TextField promptText="θ" fx:id="rotateTetta"/>
+                                <TextField promptText="ζ" fx:id="rotateZetta"/>
+                            </HBox>
+                            <Label text="Scale" />
+                            <HBox>
+                                <TextField promptText="x" fx:id="scaleX"/>
+                                <TextField promptText="y" fx:id="scaleY"/>
+                                <TextField promptText="z" fx:id="scaleZ"/>
+                            </HBox>
+                            <Button text="OK" onAction="#acceptChanges" />
+                        </VBox>
+                    </TitledPane>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+        <Canvas fx:id="canvas" height="870" onMouseDragged="#handlerMouseMove" onMousePressed="#handlerMouseClick" onScroll="#handlerScroll" width="1350" AnchorPane.topAnchor="30.0" />
+    </HBox>
 </AnchorPane>
