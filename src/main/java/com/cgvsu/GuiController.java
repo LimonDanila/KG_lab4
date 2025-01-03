@@ -12,6 +12,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -63,6 +64,8 @@ public class GuiController {
     private TextField scaleY;
     @FXML
     private TextField scaleZ;
+    @FXML
+    private CheckBox checkSaveModel;
 
     Alert messageWarning = new Alert(Alert.AlertType.WARNING);
     Alert messageError = new Alert(Alert.AlertType.ERROR);
@@ -160,7 +163,15 @@ public class GuiController {
             if (file == null) {
                 return;
             }
-            ObjWriter.write(meshList.get(listView.getFocusModel().getFocusedIndex()), file);
+            int i = listView.getFocusModel().getFocusedIndex();
+            if (checkSaveModel.isSelected()) {
+                ObjWriter.write(meshList.get(listView.getFocusModel().getFocusedIndex()), file,
+                        GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
+                System.out.println("Yes");
+            } else {
+                ObjWriter.write(meshList.get(i), file);
+                System.out.println("No");
+            }
             showMessage("Информация", "Модель сохранена", messageError);
         } else {
             showMessage("Предупреждение", "Откройте модель", messageError);

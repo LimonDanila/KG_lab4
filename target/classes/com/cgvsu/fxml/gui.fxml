@@ -64,7 +64,7 @@
                                 <CheckBox text="Включить триангуляцию"/>
                                 <CheckBox text="Загрузить текстуру"/>
                                 <CheckBox text="Включить освещение"/>
-                                <CheckBox text="Сохранять модель с изменениями"/>
+                                <CheckBox text="Сохранять модель с изменениями" fx:id="checkSaveModel"/>
                                 <Button translateY="10" text="Удалить модель" onAction="#deleteModel"/>
                                 <Text translateY="20" text="Введите удаляемые вершины"/>
                                 <HBox translateY="20">
