@@ -5,6 +5,7 @@ import com.cgvsu.math.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -32,26 +33,35 @@ public class ObjReader {
 			wordsInLine.remove(0);
 
 			++lineInd;
-			switch (token) {
-				// Для структур типа вершин методы написаны так, чтобы ничего не знать о внешней среде.
-				// Они принимают только то, что им нужно для работы, а возвращают только то, что могут создать.
-				// Исключение - индекс строки. Он прокидывается, чтобы выводить сообщение об ошибке.
-				// Могло быть иначе. Например, метод parseVertex мог вместо возвращения вершины принимать вектор вершин
-				// модели или сам класс модели, работать с ним.
-				// Но такой подход может привести к большему количеству ошибок в коде. Например, в нем что-то может
-				// тайно сделаться с классом модели.
-				// А еще это портит читаемость
-				// И не стоит забывать про тесты. Чем проще вам задать данные для теста, проверить, что метод рабочий,
-				// тем лучше.
-				case OBJ_VERTEX_TOKEN -> result.vertices.add(parseVertex(wordsInLine, lineInd));
-				case OBJ_TEXTURE_TOKEN -> result.textureVertices.add(parseTextureVertex(wordsInLine, lineInd));
-				case OBJ_NORMAL_TOKEN -> result.normals.add(parseNormal(wordsInLine, lineInd));
-				case OBJ_FACE_TOKEN -> result.polygons.add(parseFace(wordsInLine, lineInd));
-				default -> {}
+			try {
+				switch (token) {
+					// Для структур типа вершин методы написаны так, чтобы ничего не знать о внешней среде.
+					// Они принимают только то, что им нужно для работы, а возвращают только то, что могут создать.
+					// Исключение - индекс строки. Он прокидывается, чтобы выводить сообщение об ошибке.
+					// Могло быть иначе. Например, метод parseVertex мог вместо возвращения вершины принимать вектор вершин
+					// модели или сам класс модели, работать с ним.
+					// Но такой подход может привести к большему количеству ошибок в коде. Например, в нем что-то может
+					// тайно сделаться с классом модели.
+					// А еще это портит читаемость
+					// И не стоит забывать про тесты. Чем проще вам задать данные для теста, проверить, что метод рабочий,
+					// тем лучше.
+					case OBJ_VERTEX_TOKEN -> result.vertices.add(parseVertex(wordsInLine, lineInd));
+					case OBJ_TEXTURE_TOKEN -> result.textureVertices.add(parseTextureVertex(wordsInLine, lineInd));
+					case OBJ_NORMAL_TOKEN -> result.normals.add(parseNormal(wordsInLine, lineInd));
+					case OBJ_FACE_TOKEN -> result.polygons.add(parseFace(wordsInLine, lineInd));
+					default -> {}
+				}
+			} catch (ObjReaderException e) {
+				showErrorDialog(e.getMessage());
 			}
+
 		}
 
 		return result;
+	}
+
+	private static void showErrorDialog(String message) {
+		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// Всем методам кроме основного я поставил модификатор доступа protected, чтобы обращаться к ним в тестах

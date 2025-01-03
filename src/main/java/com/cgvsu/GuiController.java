@@ -11,6 +11,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -63,6 +64,10 @@ public class GuiController {
     @FXML
     private TextField scaleZ;
 
+    Alert messageWarning = new Alert(Alert.AlertType.WARNING);
+    Alert messageError = new Alert(Alert.AlertType.ERROR);
+    Alert messageInformation = new Alert(Alert.AlertType.INFORMATION);
+
     private ArrayList<Model> meshList = new ArrayList<>();
     private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
 
@@ -83,6 +88,12 @@ public class GuiController {
 
     private float phiX = 0;
     private float phiZ = 0;
+
+    private void showMessage(String headText, String messageText, Alert alert) {
+        alert.setHeaderText(headText);
+        alert.setContentText(messageText);
+        alert.showAndWait();
+    }
 
     @FXML
     private void initialize() {
@@ -134,19 +145,25 @@ public class GuiController {
             listView.setItems(list);
             // todo: обработка ошибок
         } catch (IOException exception) {
-
+            showMessage("Ошибка", "Не удалось найти файл", messageError);
         }
     }
 
     @FXML
     private void onSaveModelMenuItemClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
-        fileChooser.setTitle("Сохранить модель");
+        if (!meshList.isEmpty()) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+            fileChooser.setTitle("Сохранить модель");
 
-        File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
-        if (file != null && meshList.get(listView.getFocusModel().getFocusedIndex()) != null) { //вставить обработчик ошибок
+            File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+            if (file == null) {
+                return;
+            }
             ObjWriter.write(meshList.get(listView.getFocusModel().getFocusedIndex()), file);
+            showMessage("Информация", "Модель сохранена", messageError);
+        } else {
+            showMessage("Предупреждение", "Откройте модель", messageError);
         }
     }
 
