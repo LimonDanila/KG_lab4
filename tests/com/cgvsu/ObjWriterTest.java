@@ -118,7 +118,7 @@ class ObjWriterTest {
         ));
 
         String filename = "test.obj";
-        ObjWriter.write(model, filename);
+        ObjWriter.write(model, new File(filename));
 
         List<String> fileLines = Files.readAllLines(Paths.get(filename));
         List<String> expectedLines = List.of(

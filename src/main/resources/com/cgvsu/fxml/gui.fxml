@@ -5,45 +5,51 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <HBox>
         <VBox>
             <MenuBar>
                 <Menu mnemonicParsing="false" text="File">
-                    <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
+                    <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Добавить модель">
                         <accelerator>
                             <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                         </accelerator>
                     </MenuItem>
-                    <MenuItem mnemonicParsing="false" onAction="#onSaveModelMenuItemClick" text="Save Model">
+                    <MenuItem mnemonicParsing="false" onAction="#onSaveModelMenuItemClick" text="Сохранить модель">
                         <accelerator>
                             <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                         </accelerator>
                     </MenuItem>
                 </Menu>
             </MenuBar>
-            <ScrollPane prefHeight="870" prefWidth="350.0">
+            <ScrollPane prefHeight="870" prefWidth="450.0">
                 <VBox>
-                    <TitledPane text="models" prefWidth="350">
+                    <HBox translateY="10">
+                        <Text translateX="55" text="Модели" />
+                        <Text translateX="127" text="Положение камеры" />
+                        <Text translateX="209" text="Свет" />
+                    </HBox>
+                    <HBox translateY="15">
+                        <ListView fx:id="listView" prefHeight="200" prefWidth="150" onMouseClicked="#choiceModel"/>
+                        <ListView fx:id="listViewTwo" prefHeight="200" prefWidth="150"/>
+                        <ListView fx:id="listViewThree" prefHeight="200" prefWidth="150"/>
+                    </HBox>
+                    <TitledPane text="Transformation" prefWidth="450" translateY="20">
                         <VBox>
-                            <HBox>
-                                <Button text="add" onAction="#onOpenModelMenuItemClick"/>
-                                <Button text="del" onAction="#deleteModel"/>
-                            </HBox>
-                            <ListView fx:id="listView" onMouseClicked="#choiceModel"/>
-                            <Label text="Translation" />
+                            <Label text="Переместить" />
                             <HBox>
                                 <TextField promptText="x" fx:id="translateX"/>
                                 <TextField promptText="y" fx:id="translateY"/>
                                 <TextField promptText="z" fx:id="translateZ"/>
                             </HBox>
-                            <Label text="Rotate" />
+                            <Label text="Повернуть" />
                             <HBox>
                                 <TextField promptText="φ" fx:id="rotatePhi"/>
                                 <TextField promptText="θ" fx:id="rotateTetta"/>
                                 <TextField promptText="ζ" fx:id="rotateZetta"/>
                             </HBox>
-                            <Label text="Scale" />
+                            <Label text="Мастабировать" />
                             <HBox>
                                 <TextField promptText="x" fx:id="scaleX"/>
                                 <TextField promptText="y" fx:id="scaleY"/>
@@ -51,6 +57,42 @@
                             </HBox>
                             <Button text="OK" onAction="#acceptChanges" />
                         </VBox>
+                    </TitledPane>
+                    <TitledPane text="Работа с моделью" prefWidth="450" translateY="20">
+                        <ScrollPane prefHeight="170">
+                            <VBox>
+                                <CheckBox text="Включить триангуляцию"/>
+                                <CheckBox text="Загрузить текстуру"/>
+                                <CheckBox text="Включить освещение"/>
+                                <CheckBox text="Сохранять модель с изменениями"/>
+                                <Button translateY="10" text="Удалить модель" onAction="#deleteModel"/>
+                                <Text translateY="20" text="Введите удаляемые вершины"/>
+                                <HBox translateY="20">
+                                    <TextField fx:id="deleteVertex"/>
+                                    <Button fx:id="deleteVertexButton" translateX="5" text="Удалить"/>
+                                </HBox>
+                            </VBox>
+                        </ScrollPane>
+                    </TitledPane>
+                    <TitledPane text="Освещение" prefWidth="450" translateY="20">
+                        <ScrollPane prefHeight="120">
+                            <VBox>
+                                <Text translateX="170" text="Выберите цвет для добавления"/>
+                                <HBox translateY="5">
+                                    <Button translateX="5" text="Добавить освещение"/>
+                                    <ColorPicker translateX="60" />
+                                </HBox>
+                                <Button translateX="8" translateY="10" text="Удалить освещение"/>
+                            </VBox>
+                        </ScrollPane>
+                    </TitledPane>
+                    <TitledPane text="Работа с камерой" prefWidth="450" translateY="20">
+                        <ScrollPane prefHeight="100">
+                            <VBox translateX="5" translateY="5">
+                                <Button text="Добавить камеру"/>
+                                <Button translateX="5" translateY="2"  text="Удалить камеру"/>
+                            </VBox>
+                        </ScrollPane>
                     </TitledPane>
                 </VBox>
             </ScrollPane>
