@@ -15,10 +15,8 @@ public class ObjWriter{
     private static final String OBJ_TEXTURE_TOKEN = "vt";
     private static final String OBJ_NORMAL_TOKEN = "vn";
     private static final String OBJ_FACE_TOKEN = "f";
-    private static final String FILE_NAME = "model.obj";
 
-    public static void write(Model model, String filename) {
-        File file = new File(filename);
+    public static void write(Model model, File file) {
         if (!createDir(file.getParentFile()))
             return;
         if (!createFile(file))
@@ -31,10 +29,6 @@ public class ObjWriter{
         } catch (IOException e) {
             System.out.println("Ошибка при записи файла");
         }
-    }
-
-    public static void write(Model model) {
-        write(model, FILE_NAME);
     }
 
     private static boolean createDir(File directory) {

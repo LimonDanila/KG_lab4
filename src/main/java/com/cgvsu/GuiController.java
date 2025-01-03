@@ -1,13 +1,18 @@
 package com.cgvsu;
 
 import com.cgvsu.math.Vector2f;
+import com.cgvsu.objwriter.ObjWriter;
+import com.cgvsu.render_engine.GraphicConveyor;
 import com.cgvsu.render_engine.RenderEngine;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -18,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+import java.util.ArrayList;
+
 import com.cgvsu.math.Vector3f;
 
 import com.cgvsu.model.Model;
@@ -33,6 +40,31 @@ public class GuiController {
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private ListView<String> listView;
+
+    @FXML
+    private TextField translateX;
+    @FXML
+    private TextField translateY;
+    @FXML
+    private TextField translateZ;
+    @FXML
+    private TextField rotatePhi;
+    @FXML
+    private TextField rotateTetta;
+    @FXML
+    private TextField rotateZetta;
+    @FXML
+    private TextField scaleX;
+    @FXML
+    private TextField scaleY;
+    @FXML
+    private TextField scaleZ;
+
+    private ArrayList<Model> meshList = new ArrayList<>();
+    private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
 
     private float radius = 100;
 
@@ -54,8 +86,8 @@ public class GuiController {
 
     @FXML
     private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
-        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
+        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(canvas.getWidth()));
+        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(canvas.getHeight()));
 
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -67,8 +99,11 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+            if (!meshList.isEmpty()) {
+                for (int i = 0; i < meshList.size(); i++) {
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), (int) width, (int) height,
+                            GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
+                }
             }
         });
 
@@ -91,7 +126,12 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
+            meshList.add(ObjReader.read(fileContent));
+            TRSList.add(new Vector3f[] {new Vector3f(-40 * listView.getItems().size(), 0, 0),
+            new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
+            ObservableList<String> list = listView.getItems();
+            list.add(file.getName());
+            listView.setItems(list);
             // todo: обработка ошибок
         } catch (IOException exception) {
 
@@ -99,33 +139,53 @@ public class GuiController {
     }
 
     @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+    private void onSaveModelMenuItemClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+        fileChooser.setTitle("Сохранить модель");
+
+        File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+        if (file != null && meshList.get(listView.getFocusModel().getFocusedIndex()) != null) { //вставить обработчик ошибок
+            ObjWriter.write(meshList.get(listView.getFocusModel().getFocusedIndex()), file);
+        }
     }
 
     @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+    public void acceptChanges(ActionEvent actionEvent) {
+        int index = listView.getFocusModel().getFocusedIndex();
+        if (index >= 0) {
+            TRSList.set(index, new Vector3f[] {new Vector3f(Float.parseFloat(translateX.getText()), Float.parseFloat(translateY.getText()), Float.parseFloat(translateZ.getText())),
+                    new Vector3f(Float.parseFloat(rotatePhi.getText()), Float.parseFloat(rotateTetta.getText()), Float.parseFloat(rotateZetta.getText())),
+                    new Vector3f(Float.parseFloat(scaleX.getText()), Float.parseFloat(scaleY.getText()), Float.parseFloat(scaleZ.getText()))});
+        }
     }
 
     @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+    public void choiceModel(MouseEvent actionEvent) {
+        int index = listView.getFocusModel().getFocusedIndex();
+        if (index >= 0) {
+            translateX.setText(Float.toString(TRSList.get(index)[0].getX()));
+            translateY.setText(Float.toString(TRSList.get(index)[0].getY()));
+            translateZ.setText(Float.toString(TRSList.get(index)[0].getZ()));
+            rotatePhi.setText(Float.toString(TRSList.get(index)[1].getX()));
+            rotateTetta.setText(Float.toString(TRSList.get(index)[1].getY()));
+            rotateZetta.setText(Float.toString(TRSList.get(index)[1].getZ()));
+            scaleX.setText(Float.toString(TRSList.get(index)[2].getX()));
+            scaleY.setText(Float.toString(TRSList.get(index)[2].getY()));
+            scaleZ.setText(Float.toString(TRSList.get(index)[2].getZ()));
+        }
     }
 
     @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-    }
-
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-    }
-
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+    public void deleteModel(ActionEvent actionEvent) {
+        int index = listView.getFocusModel().getFocusedIndex();
+        if (index >= 0) {
+            ObservableList<String> list = listView.getItems();
+            list.remove(index);
+            listView.setItems(list);
+            meshList.remove(index);
+            TRSList.remove(index);
+        }
     }
 
     @FXML

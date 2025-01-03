@@ -14,10 +14,11 @@ public class RenderEngine {
             final Camera camera,
             final Model mesh,
             final int width,
-            final int height)
+            final int height,
+            Matrix4d modelMatrix4d)
     {
 
-        Matrix4d modelMatrix = translateRotateScale(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+        Matrix4d modelMatrix = modelMatrix4d;
         Matrix4d viewMatrix = camera.getViewMatrix();
         Matrix4d projectionMatrix = camera.getProjectionMatrix();
 
