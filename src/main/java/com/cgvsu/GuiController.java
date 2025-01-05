@@ -4,6 +4,7 @@ import com.cgvsu.math.Vector2f;
 import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.render_engine.GraphicConveyor;
 import com.cgvsu.render_engine.RenderEngine;
+import com.cgvsu.model.DeletePolygons;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
@@ -26,6 +27,9 @@ import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.cgvsu.math.Vector3f;
 
@@ -65,6 +69,8 @@ public class GuiController {
     @FXML
     private TextField scaleZ;
     @FXML
+    private TextField deletePolygonIndex;
+    @FXML
     private CheckBox checkSaveModel;
 
     Alert messageWarning = new Alert(Alert.AlertType.WARNING);
@@ -73,6 +79,7 @@ public class GuiController {
 
     private ArrayList<Model> meshList = new ArrayList<>();
     private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
+    private List<Integer> indexPolygonsDelete = new ArrayList<>();
 
     private float radius = 100;
 
@@ -172,9 +179,9 @@ public class GuiController {
                 ObjWriter.write(meshList.get(i), file);
                 System.out.println("No");
             }
-            showMessage("Информация", "Модель сохранена", messageError);
+            showMessage("Информация", "Модель сохранена", messageInformation);
         } else {
-            showMessage("Предупреждение", "Откройте модель", messageError);
+            showMessage("Предупреждение", "Откройте модель", messageInformation);
         }
     }
 
@@ -217,6 +224,33 @@ public class GuiController {
     }
 
     @FXML
+    public void deletePolygons(ActionEvent actionEvent) {
+        int index = listView.getFocusModel().getFocusedIndex();
+        if (index >= 0) {
+            List<Integer> temp;
+            Model currModel = meshList.get(listView.getFocusModel().getFocusedIndex());
+            if (deletePolygonIndex.getLength() != 0) {
+                if (!currModel.polygons.isEmpty()) {
+                    temp = extractIntegersFromString(deletePolygonIndex.getText());
+                    indexPolygonsDelete.addAll(temp);
+                    if (indexPolygonsDelete.get(indexPolygonsDelete.size() - 1) < currModel.polygons.size()) {
+                        DeletePolygons.deletePolygons(currModel, true, indexPolygonsDelete.toArray(new Integer[0]));
+                        indexPolygonsDelete.clear();
+                    } else {
+                        showMessage("Предупреждение", "Последний введенный индекс полигона больше, чем количество полигонов в модели!", messageWarning);
+                    }
+                } else {
+                    showMessage("Предупреждение", "Все полигоны данной модели удалены!", messageInformation);
+                }
+            } else {
+                showMessage("Предупреждение", "Введите индекс(-сы) полигона(-нов) для удаления", messageInformation);
+            }
+        } else {
+            showMessage("Предупреждение", "Добавьте модель", messageInformation);
+        }
+    }
+
+    @FXML
     public void handlerMouseClick(MouseEvent actionEvent) {
         if (actionEvent.isPrimaryButtonDown() || actionEvent.isSecondaryButtonDown()) {
             position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
@@ -252,5 +286,28 @@ public class GuiController {
                 (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.sin((positionC.getZ() * Math.PI) / 180)),
                 (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180)));
         camera.setPosition(newPos);
+    }
+
+    public static List<Integer> extractIntegersFromString(String input) {
+        List<Integer> numbers = new ArrayList<>();
+        if (input == null || input.isEmpty()) {
+            return numbers;
+        }
+
+        // Регулярное выражение для поиска одного или более последовательных символов цифр
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            try {
+                int number = Integer.parseInt(matcher.group());
+                numbers.add(number);
+            } catch (NumberFormatException e) {
+                // Если не смогли распарсить, просто пропускаем это число.
+                System.err.println("Failed to parse integer: " + matcher.group() + ". Skipping it. " + e.getMessage());
+            }
+
+        }
+        return numbers;
     }
 }
