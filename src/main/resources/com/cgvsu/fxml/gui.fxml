@@ -66,10 +66,10 @@
                                 <CheckBox text="Включить освещение"/>
                                 <CheckBox text="Сохранять модель с изменениями"/>
                                 <Button translateY="10" text="Удалить модель" onAction="#deleteModel"/>
-                                <Text translateY="20" text="Введите удаляемые вершины"/>
-                                <HBox translateY="20">
-                                    <TextField fx:id="deleteVertex"/>
-                                    <Button fx:id="deleteVertexButton" translateX="5" text="Удалить"/>
+                                <Text translateY="20" text="Введите удаляемые полигоны"/>
+                                <HBox translateY="25">
+                                    <TextField fx:id="deletePolygonIndex"/>
+                                    <Button translateX="5" text="Удалить" onAction="#deletePolygons"/>
                                 </HBox>
                             </VBox>
                         </ScrollPane>
