@@ -59,15 +59,16 @@
                         </VBox>
                     </TitledPane>
                     <TitledPane text="Работа с моделью" prefWidth="450" translateY="20">
-                        <ScrollPane prefHeight="170">
+                        <ScrollPane prefHeight="200">
                             <VBox>
-                                <CheckBox text="Включить триангуляцию"/>
-                                <CheckBox text="Загрузить текстуру"/>
-                                <CheckBox text="Включить освещение"/>
-                                <CheckBox text="Сохранять модель с изменениями"/>
-                                <Button translateY="10" text="Удалить модель" onAction="#deleteModel"/>
-                                <Text translateY="20" text="Введите удаляемые полигоны"/>
-                                <HBox translateY="25">
+                                <Button translateY="5" text="Закрузить текстуру модели"/>
+                                <CheckBox translateY="10" text="Включить триангуляцию"/>
+                                <CheckBox translateY="10" text="Включить текстуру"/>
+                                <CheckBox translateY="10" text="Включить освещение"/>
+                                <CheckBox translateY="10" text="Сохранять модель с изменениями"/>
+                                <Button translateY="15" text="Удалить модель" onAction="#deleteModel"/>
+                                <Text translateY="25" text="Введите удаляемые полигоны"/>
+                                <HBox translateY="30">
                                     <TextField fx:id="deletePolygonIndex"/>
                                     <Button translateX="5" text="Удалить" onAction="#deletePolygons"/>
                                 </HBox>
