@@ -164,8 +164,11 @@ import javafx.scene.paint.Color;
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
+    public RenderEngine() {
 
-    public static void render(
+    }
+
+    public  void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
             final Model mesh,
@@ -174,8 +177,8 @@ public class RenderEngine {
             final int width,
             final int height)
     {
-        TriangulatedModel.triangulateModel(mesh);
-        VertexNormalsCalculator.calculateNormals(mesh);
+        //System.out.println("RenderEngine.render");
+
         Matrix4d modelMatrix = rotateScaleTranslate();
         Matrix4d viewMatrix = camera.getViewMatrix();
         Matrix4d projectionMatrix = camera.getProjectionMatrix();
@@ -199,7 +202,7 @@ public class RenderEngine {
 
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-                Vector2f textureCoord = mesh.textureVertices.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
+                    Vector2f textureCoord = mesh.textureVertices.get(mesh.polygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
                 Vector3f normal = mesh.normals.get(mesh.polygons.get(polygonInd).getNormalIndices().get(vertexInPolygonInd));
 
                 Vector3f transformedVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
@@ -214,6 +217,10 @@ public class RenderEngine {
                 polygonNormal = polygonNormal.add(normal);
             }
 
+//            float edgeABC = edgeFunction(screenPoints.get(0), screenPoints.get(1), screenPoints.get(2));
+//            if (edgeABC<0)
+//                continue;
+
             // Normalize the polygon normal
             polygonNormal = polygonNormal.normalize();
 
@@ -221,12 +228,19 @@ public class RenderEngine {
             Vector3f cameraDirection = camera.getTarget().subtract(camera.getPosition()).normalize();
 
             // Check if the polygon is facing the camera
-            if (polygonNormal.dot(cameraDirection) >= 0) {
-                rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints, textureCoords, normals, Color.BLUE);
-                drawPolygonOutline(graphicsContext, screenPoints);
-            }
+//            if (polygonNormal.dot(cameraDirection) >= 0) {
+//                rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints, textureCoords, normals, Color.BLUE);
+//            rasterizer.rasterizePolygon(graphicsContext, screenPoints, Color.BLUE);
+            rasterizer.rasterizePolygon(graphicsContext, screenPoints,worldPoints, Color.BLUE);
+
+//            drawPolygonOutline(graphicsContext, screenPoints);
+//            }
         }
     }
+
+    public static float edgeFunction (Vector2f a, Vector2f b, Vector2f c){
+        return (b.getX() - a.getX()) * (c.getY() - a.getY()) - (b.getY() - a.getY()) * (c.getX() - a.getX());
+    };
 
     private static void drawPolygonOutline(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints) {
         int nVertices = screenPoints.size();
@@ -235,6 +249,11 @@ public class RenderEngine {
             Vector2f end = screenPoints.get((i + 1) % nVertices);
             graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
         }
+    }
+
+    public void initModel(Model mesh) {
+        TriangulatedModel.triangulateModel(mesh);
+        VertexNormalsCalculator.calculateNormals(mesh);
     }
 }
 

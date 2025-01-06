@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -36,8 +37,8 @@ public class GuiController {
     private Model mesh = null;
 
     private Texture texture = null;
-    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
-
+//    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+private Light light = new Light(new Vector3f(0,0,0),new Color(2,3,4,5));
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
@@ -53,6 +54,9 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+        RenderEngine renderEngine = new RenderEngine();
+//        if (mesh!=null)
+//            renderEngine.initModel(mesh);
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
@@ -61,7 +65,8 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh,texture,light, (int) width, (int) height);
+                renderEngine.initModel(mesh);
+                renderEngine.render(canvas.getGraphicsContext2D(), camera, mesh,texture,light, (int) width, (int) height);
             }
         });
 
