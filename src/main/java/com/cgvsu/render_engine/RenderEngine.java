@@ -147,6 +147,8 @@
 //}
 
 
+
+// рабочий варик без освещения
 package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
@@ -185,7 +187,7 @@ public class RenderEngine {
 
         Matrix4d modelViewProjectionMatrix = modelMatrix.multiply(viewMatrix).multiply(projectionMatrix);
 
-        Rasterizer rasterizer = new Rasterizer(width, height);
+        Rasterizer rasterizer = new Rasterizer(width, height,camera);
         rasterizer.setTexture(texture);
         rasterizer.setLight(light);
         rasterizer.clearZBuffer(); // Очистка Z-буфера перед рендерингом
@@ -217,9 +219,9 @@ public class RenderEngine {
                 polygonNormal = polygonNormal.add(normal);
             }
 
-//            float edgeABC = edgeFunction(screenPoints.get(0), screenPoints.get(1), screenPoints.get(2));
-//            if (edgeABC<0)
-//                continue;
+            float edgeABC = edgeFunction(screenPoints.get(0), screenPoints.get(1), screenPoints.get(2));
+            if (edgeABC<0)
+                continue;
 
             // Normalize the polygon normal
             polygonNormal = polygonNormal.normalize();
@@ -231,9 +233,9 @@ public class RenderEngine {
 //            if (polygonNormal.dot(cameraDirection) >= 0) {
 //                rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints, textureCoords, normals, Color.BLUE);
 //            rasterizer.rasterizePolygon(graphicsContext, screenPoints, Color.BLUE);
-            rasterizer.rasterizePolygon(graphicsContext, screenPoints,worldPoints, Color.BLUE);
+            rasterizer.rasterizePolygon(graphicsContext, screenPoints,worldPoints, Color.BLUE,textureCoords,normals);
 
-//            drawPolygonOutline(graphicsContext, screenPoints);
+            drawPolygonOutline(graphicsContext, screenPoints);
 //            }
         }
     }

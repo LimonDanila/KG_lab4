@@ -221,6 +221,7 @@ package com.cgvsu.model;
 
 import com.cgvsu.math.Vector2f;
 import com.cgvsu.math.Vector3f;
+import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -233,13 +234,18 @@ public class Rasterizer {
     private final int height;
     private final float[] zBuffer;
     private Texture texture;
+    private Camera camera;
     private Light light;
+    private Material mt;
 
-    public Rasterizer(int width, int height) {
+    public Rasterizer(int width, int height, Camera camera) {
         this.width = width;
         this.height = height;
+        this.camera = camera;
+        this.light = new Light(camera.getPosition(),Color.WHITE);
         this.zBuffer = new float[width * height];
         Arrays.fill(zBuffer, Float.MAX_VALUE);
+        mt = new Material();
     }
 
     public void setTexture(Texture texture) {
@@ -250,7 +256,7 @@ public class Rasterizer {
         this.light = light;
     }
 
-    public void rasterizePolygon(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints, ArrayList<Vector3f> worldPoints, Color baseColor) {
+    public void rasterizePolygon(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints, ArrayList<Vector3f> worldPoints, Color baseColor, ArrayList<Vector2f> textureCoords, ArrayList<Vector3f> normalVectors) {
 
         if (screenPoints.size() < 3)
             return;
@@ -283,6 +289,13 @@ public class Rasterizer {
                     float p2p3P = RenderEngine.edgeFunction(p2, p3, pt);
                     float p3p1P = RenderEngine.edgeFunction(p3, p1, pt);
 
+                    float[] weight = calculate_baricentric_coeficients(p1, p2, p3, pt);
+
+
+                    Vector3f P_world_coord = new Vector3f(worldPoints.get(0).getX() * weight[0] + weight[1] * worldPoints.get(1).getX() + weight[2] * worldPoints.get(2).getX(),
+                            worldPoints.get(0).getY() * weight[0] + weight[1] * worldPoints.get(1).getY() + weight[2] * worldPoints.get(2).getY(),
+                            worldPoints.get(0).getZ() * weight[0] + weight[1] * worldPoints.get(1).getZ() + weight[2] * worldPoints.get(2).getZ());
+
                     // If all the edge functions are positive, the point is inside the triangle
                     if (p1p2P >= 0 && p2p3P >= 0 && p3p1P >= 0) {
 
@@ -290,8 +303,12 @@ public class Rasterizer {
                         int index = y * width + x;
                         if (z < zBuffer[index]) {
                             zBuffer[index] = z;
+                            ArrayList<Light> lights = new ArrayList<>();
+                            lights.add(light);
                             // Draw the pixel
-                            graphicsContext.getPixelWriter().setColor(x, y, baseColor);
+                            mt.setLights(lights);
+                            Color clNew = mt.useMaterial(weight[0], weight[1], weight[2], textureCoords, normalVectors, P_world_coord);
+                            graphicsContext.getPixelWriter().setColor(x, y, clNew);
                         }
                     }
                 }
@@ -310,6 +327,22 @@ public class Rasterizer {
     public void clearZBuffer() {
         Arrays.fill(zBuffer, Float.MAX_VALUE);
     }
+
+    private float[] calculate_baricentric_coeficients(Vector2f A, Vector2f B,
+                                                      Vector2f C,
+                                                      Vector2f P) {
+        float ABC = RenderEngine.edgeFunction(A, B, C);
+        float ABP = RenderEngine.edgeFunction(A, B, P);
+        float BCP = RenderEngine.edgeFunction(B, C, P);
+        float CAP = RenderEngine.edgeFunction(C, A, P);
+
+        float weight_a = BCP / ABC;
+        float weight_b = CAP / ABC;
+        float weight_c = ABP / ABC;
+
+        return new float[]{weight_a, weight_b, weight_c};
+    }
+
 }
 
 

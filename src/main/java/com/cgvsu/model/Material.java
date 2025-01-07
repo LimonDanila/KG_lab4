@@ -5,6 +5,8 @@ import com.cgvsu.math.Vector3f;
 import javafx.scene.paint.Color;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Material {
@@ -12,9 +14,10 @@ public class Material {
     private boolean showIllumination;
     private boolean showTexture;
     private Texture texture;
-    private Color mainColor;
-    private Color highlightColor;
-    private Color basicColor;
+    private Color basicColor = Color.BLUE;
+    private Color mainColor = basicColor;
+    private Color background = Color.WHITE;
+    private Color highlightColor = Color.rgb(255, 215, 50);
     private List<Light> lights;
 
     public Material(boolean showMesh, boolean showIllumination, boolean showTexture) {
@@ -25,24 +28,28 @@ public class Material {
 
     public Material() {
         this.showMesh = false;
-        this.showIllumination = false;
+        this.showIllumination = true;
         this.showTexture = false;
     }
 
-    public Color useMaterial(float wA, float wB, float wC, Vector2f[] textureVectors, Vector3f[] normalVectors, Vector3f P) {
-        //int[] rgb = new int[]{mainColor.getRed(), mainColor.getGreen(), mainColor.getBlue()};
-        Color cl = mainColor;
+    public Color useMaterial(float wA, float wB, float wC, ArrayList<Vector2f> textureVectors, ArrayList<Vector3f> normalVectors, Vector3f P) {
+        int[] rgb = new int[]{
+                (int) mainColor.getRed() * 255,
+                (int) mainColor.getGreen() * 255,
+                (int) mainColor.getBlue() * 255
+        };
+//        Color cl = mainColor;
         if (showTexture) {
-           cl = Texturing.texturing(textureVectors, texture, wA, wB, wC, cl);
+            Texturing.texturing(textureVectors, texture, wA, wB, wC, rgb);
         }
         if (showIllumination) {
-            cl= Illumination.illumination(normalVectors, P, lights, wA, wB, wC, rgb);
+            Illumination.illumination(normalVectors, P, lights, wA, wB, wC, rgb);
         }
         if (showMesh) {
-            cl= Mech.showMesh(wA, wB, wC, rgb, background);
+            Mech.showMesh(wA, wB, wC, rgb, background);
         }
 
-        return cl;//new Color(rgb[0], rgb[1], rgb[2]);
+        return Color.rgb(rgb[0], rgb[1], rgb[2]);
     }
 
     public Texture getTexture() {

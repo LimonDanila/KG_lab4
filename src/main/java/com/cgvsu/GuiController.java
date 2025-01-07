@@ -38,7 +38,7 @@ public class GuiController {
 
     private Texture texture = null;
 //    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
-private Light light = new Light(new Vector3f(0,0,0),new Color(2,3,4,5));
+private Light light = new Light(new Vector3f(10,10,0),Color.WHITE);
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
