@@ -51,7 +51,9 @@ public class GuiController {
     private Canvas canvas;
 
     @FXML
-    private ListView<String> listView;
+    private ListView<String> listViewModel;
+    @FXML
+    private ListView<String> listViewCamera;
 
     @FXML
     private TextField translateX;
@@ -75,6 +77,12 @@ public class GuiController {
     private TextField deletePolygonIndex;
     @FXML
     private CheckBox checkSaveModel;
+    @FXML
+    private CheckBox checkTriangulated;
+    @FXML
+    private CheckBox checkLighting;
+    @FXML
+    private CheckBox checkActiveTexture;
 
     Alert messageWarning = new Alert(Alert.AlertType.WARNING);
     Alert messageError = new Alert(Alert.AlertType.ERROR);
@@ -129,7 +137,7 @@ public class GuiController {
                     if (meshList.get(i) != null) {
                         RenderEngine.initModel(meshList.get(i));
                         RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), texture, light, (int) width, (int) height,
-                                GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
+                                GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]), checkTriangulated.isSelected(), checkLighting.isSelected(), checkActiveTexture.isSelected());
                     }
 
                 }
@@ -158,11 +166,11 @@ public class GuiController {
             String fileContent = Files.readString(fileName);
             meshList.add(ObjReader.read(fileContent));
             originMeshList.add(ObjReader.read(fileContent));
-            TRSList.add(new Vector3f[] {new Vector3f(-40 * listView.getItems().size(), 0, 0),
+            TRSList.add(new Vector3f[] {new Vector3f(-40 * listViewModel.getItems().size(), 0, 0),
             new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
-            ObservableList<String> list = listView.getItems();
+            ObservableList<String> list = listViewModel.getItems();
             list.add(file.getName());
-            listView.setItems(list);
+            listViewModel.setItems(list);
             // todo: обработка ошибок
         } catch (IOException exception) {
             showMessage("Ошибка", "Не удалось найти файл", messageError);
@@ -180,9 +188,9 @@ public class GuiController {
             if (file == null) {
                 return;
             }
-            int i = listView.getFocusModel().getFocusedIndex();
+            int i = listViewModel.getFocusModel().getFocusedIndex();
             if (checkSaveModel.isSelected()) {
-                ObjWriter.write(meshList.get(listView.getFocusModel().getFocusedIndex()), file,
+                ObjWriter.write(meshList.get(listViewModel.getFocusModel().getFocusedIndex()), file,
                         GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
                 System.out.println("Yes");
             } else {
@@ -196,8 +204,22 @@ public class GuiController {
     }
 
     @FXML
+    private void onOpenTextureMenuItemClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.bmp"));
+        fileChooser.setTitle("Load Texture");
+
+        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        texture = new Texture(file.getAbsolutePath());
+    }
+
+    @FXML
     public void acceptChanges(ActionEvent actionEvent) {
-        int index = listView.getFocusModel().getFocusedIndex();
+        int index = listViewModel.getFocusModel().getFocusedIndex();
         if (index >= 0) {
             TRSList.set(index, new Vector3f[] {new Vector3f(Float.parseFloat(translateX.getText()), Float.parseFloat(translateY.getText()), Float.parseFloat(translateZ.getText())),
                     new Vector3f(Float.parseFloat(rotatePhi.getText()), Float.parseFloat(rotateTetta.getText()), Float.parseFloat(rotateZetta.getText())),
@@ -207,7 +229,7 @@ public class GuiController {
 
     @FXML
     public void choiceModel(MouseEvent actionEvent) {
-        int index = listView.getFocusModel().getFocusedIndex();
+        int index = listViewModel.getFocusModel().getFocusedIndex();
         if (index >= 0) {
             translateX.setText(Float.toString(TRSList.get(index)[0].getX()));
             translateY.setText(Float.toString(TRSList.get(index)[0].getY()));
@@ -222,12 +244,17 @@ public class GuiController {
     }
 
     @FXML
+    public void choiceCamera(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
     public void deleteModel(ActionEvent actionEvent) {
-        int index = listView.getFocusModel().getFocusedIndex();
+        int index = listViewModel.getFocusModel().getFocusedIndex();
         if (index >= 0) {
-            ObservableList<String> list = listView.getItems();
+            ObservableList<String> list = listViewModel.getItems();
             list.remove(index);
-            listView.setItems(list);
+            listViewModel.setItems(list);
             meshList.remove(index);
             originMeshList.remove(index);
             TRSList.remove(index);
@@ -241,10 +268,10 @@ public class GuiController {
 
     @FXML
     public void deletePolygons(ActionEvent actionEvent) {
-        int index = listView.getFocusModel().getFocusedIndex();
+        int index = listViewModel.getFocusModel().getFocusedIndex();
         if (index >= 0) {
             List<Integer> temp;
-            Model currModel = meshList.get(listView.getFocusModel().getFocusedIndex());
+            Model currModel = meshList.get(listViewModel.getFocusModel().getFocusedIndex());
             if (deletePolygonIndex.getLength() != 0) {
                 if (!currModel.polygons.isEmpty()) {
                     temp = extractIntegersFromString(deletePolygonIndex.getText());
