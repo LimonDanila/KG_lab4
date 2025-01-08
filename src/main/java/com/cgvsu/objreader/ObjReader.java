@@ -53,8 +53,8 @@ public class ObjReader {
 				}
 			} catch (ObjReaderException e) {
 				showErrorDialog(e.getMessage());
+				throw e;
 			}
-
 		}
 
 		return result;

@@ -66,7 +66,7 @@
                                 <CheckBox translateY="10" text="Включить триангуляцию"/>
                                 <CheckBox translateY="10" text="Включить текстуру"/>
                                 <CheckBox translateY="10" text="Включить освещение"/>
-                                <CheckBox translateY="10" text="Сохранять модель с изменениями"/>
+                                <CheckBox fx:id="checkSaveModel" translateY="10" text="Сохранять модель с изменениями"/>
                                 <Button translateY="15" text="Удалить модель" onAction="#deleteModel"/>
                                 <Text translateY="25" text="Введите удаляемые полигоны"/>
                                 <HBox translateY="30">
