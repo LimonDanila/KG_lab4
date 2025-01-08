@@ -32,15 +32,17 @@ public class Material {
         this.showTexture = false;
     }
 
-    public Color useMaterial(float wA, float wB, float wC, ArrayList<Vector2f> textureVectors, ArrayList<Vector3f> normalVectors, Vector3f P) {
+    public Color useMaterial(float wA, float wB, float wC, ArrayList<Vector2f> textureVectors, ArrayList<Vector3f> normalVectors, Vector3f P,Texture texture) {
         int[] rgb = new int[]{
                 (int) mainColor.getRed() * 255,
                 (int) mainColor.getGreen() * 255,
                 (int) mainColor.getBlue() * 255
         };
+        if (texture != null){
+        setTexture(texture);}
 //        Color cl = mainColor;
         if (showTexture) {
-            Texturing.texturing(textureVectors, texture, wA, wB, wC, rgb);
+            Texturing.texturing(textureVectors, this.texture, wA, wB, wC, rgb);
         }
         if (showIllumination) {
             Illumination.illumination(normalVectors, P, lights, wA, wB, wC, rgb);

@@ -186,6 +186,7 @@ public class RenderEngine {
         Matrix4d projectionMatrix = camera.getProjectionMatrix();
 
         Matrix4d modelViewProjectionMatrix = modelMatrix.multiply(viewMatrix).multiply(projectionMatrix);
+//        Matrix4d modelViewProjectionMatrix = projectionMatrix.multiply(viewMatrix).multiply(modelMatrix);
 
         Rasterizer rasterizer = new Rasterizer(width, height,camera);
         rasterizer.setTexture(texture);

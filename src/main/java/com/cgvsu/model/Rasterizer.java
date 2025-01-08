@@ -291,7 +291,6 @@ public class Rasterizer {
 
                     float[] weight = calculate_baricentric_coeficients(p1, p2, p3, pt);
 
-
                     Vector3f P_world_coord = new Vector3f(worldPoints.get(0).getX() * weight[0] + weight[1] * worldPoints.get(1).getX() + weight[2] * worldPoints.get(2).getX(),
                             worldPoints.get(0).getY() * weight[0] + weight[1] * worldPoints.get(1).getY() + weight[2] * worldPoints.get(2).getY(),
                             worldPoints.get(0).getZ() * weight[0] + weight[1] * worldPoints.get(1).getZ() + weight[2] * worldPoints.get(2).getZ());
@@ -307,7 +306,7 @@ public class Rasterizer {
                             lights.add(light);
                             // Draw the pixel
                             mt.setLights(lights);
-                            Color clNew = mt.useMaterial(weight[0], weight[1], weight[2], textureCoords, normalVectors, P_world_coord);
+                            Color clNew = mt.useMaterial(weight[0], weight[1], weight[2], textureCoords, normalVectors, P_world_coord,texture);
                             graphicsContext.getPixelWriter().setColor(x, y, clNew);
                         }
                     }
