@@ -58,7 +58,7 @@ public class Material {
 
     public void setTexture(Texture texture) {
         this.texture = texture;
-        this.showTexture = !texture.isNull();
+//        this.showTexture = !texture.isNull();
     }
 
     public boolean isShowMesh() {

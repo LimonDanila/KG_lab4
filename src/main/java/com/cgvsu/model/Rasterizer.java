@@ -269,7 +269,7 @@ public class Rasterizer {
         this.light = light;
     }
 
-    public void rasterizePolygon(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints, ArrayList<Vector3f> worldPoints, Color baseColor, ArrayList<Vector2f> textureCoords, ArrayList<Vector3f> normalVectors) {
+    public void rasterizePolygon(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints, ArrayList<Vector3f> worldPoints, Color baseColor, ArrayList<Vector2f> textureCoords, ArrayList<Vector3f> normalVectors, boolean checkLighting, boolean checkActiveTexture) {
 
         if (screenPoints.size() < 3)
             return;
@@ -321,6 +321,9 @@ public class Rasterizer {
                             lights.add(light);
                             // Draw the pixel
                             mt.setLights(lights);
+                            mt.setShowIllumination(checkLighting);
+                            mt.setShowTexture(checkActiveTexture);
+                            mt.setTexture(texture);
                             Color clNew = mt.useMaterial(weight[0], weight[1], weight[2], textureCoords, normalVectors, P_world_coord);
                             graphicsContext.getPixelWriter().setColor(x, y, clNew);
                         }

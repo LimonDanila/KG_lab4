@@ -29,12 +29,10 @@
                     <HBox translateY="10">
                         <Text translateX="53" text="Модели" />
                         <Text translateX="120" text="Положение камеры" />
-                        <Text translateX="200" text="Свет" />
                     </HBox>
                     <HBox translateY="15">
-                        <ListView styleClass="scrollBar" translateX="15" fx:id="listView" prefHeight="200" prefWidth="120" onMouseClicked="#choiceModel"/>
-                        <ListView styleClass="scrollBar" translateX="40" fx:id="listViewTwo" prefHeight="200" prefWidth="120"/>
-                        <ListView styleClass="scrollBar" translateX="65" fx:id="listViewThree" prefHeight="200" prefWidth="120"/>
+                        <ListView styleClass="scrollBar" translateX="15" fx:id="listViewModel" prefHeight="200" prefWidth="120" onMouseClicked="#choiceModel"/>
+                        <ListView styleClass="scrollBar" translateX="40" fx:id="listViewCamera" prefHeight="200" prefWidth="120" onMouseClicked="#choiceCamera"/>
                     </HBox>
                     <TitledPane text="Transformation" prefWidth="450" translateY="20">
                         <VBox>
@@ -62,10 +60,10 @@
                     <TitledPane text="Работа с моделью" prefWidth="450" translateY="20">
                         <ScrollPane prefHeight="200">
                             <VBox translateX="5">
-                                <Button translateY="5" text="Закрузить текстуру модели"/>
-                                <CheckBox translateY="10" text="Включить триангуляцию"/>
-                                <CheckBox translateY="10" text="Включить текстуру"/>
-                                <CheckBox translateY="10" text="Включить освещение"/>
+                                <Button translateY="5" text="Закрузить текстуру модели" onAction="#onOpenTextureMenuItemClick"/>
+                                <CheckBox fx:id="checkTriangulated" translateY="10" text="Включить полигональную сетку" />
+                                <CheckBox fx:id="checkActiveTexture" translateY="10" text="Включить текстуру"/>
+                                <CheckBox fx:id="checkLighting" translateY="10" text="Включить освещение"/>
                                 <CheckBox fx:id="checkSaveModel" translateY="10" text="Сохранять модель с изменениями"/>
                                 <Button translateY="15" text="Удалить модель" onAction="#deleteModel"/>
                                 <Text translateY="25" text="Введите удаляемые полигоны"/>
@@ -76,18 +74,18 @@
                             </VBox>
                         </ScrollPane>
                     </TitledPane>
-                    <TitledPane text="Освещение" prefWidth="450" translateY="20">
-                        <ScrollPane prefHeight="120">
-                            <VBox>
-                                <Text translateX="170" text="Выберите цвет для добавления"/>
-                                <HBox translateY="5">
-                                    <Button translateX="5" text="Добавить освещение"/>
-                                    <ColorPicker translateX="60" />
-                                </HBox>
-                                <Button translateX="8" translateY="10" text="Удалить освещение"/>
-                            </VBox>
-                        </ScrollPane>
-                    </TitledPane>
+<!--                    <TitledPane text="Освещение" prefWidth="450" translateY="20">-->
+<!--                        <ScrollPane prefHeight="120">-->
+<!--                            <VBox>-->
+<!--                                <Text translateX="170" text="Выберите цвет для добавления"/>-->
+<!--                                <HBox translateY="5">-->
+<!--                                    <Button translateX="5" text="Добавить освещение"/>-->
+<!--                                    <ColorPicker translateX="60" />-->
+<!--                                </HBox>-->
+<!--                                <Button translateX="8" translateY="10" text="Удалить освещение"/>-->
+<!--                            </VBox>-->
+<!--                        </ScrollPane>-->
+<!--                    </TitledPane>-->
                     <TitledPane text="Работа с камерой" prefWidth="450" translateY="20">
                         <ScrollPane prefHeight="100">
                             <VBox translateX="5" translateY="5">

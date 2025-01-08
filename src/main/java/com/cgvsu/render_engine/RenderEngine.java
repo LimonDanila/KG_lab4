@@ -156,11 +156,10 @@ import java.util.ArrayList;
 
 
 import com.cgvsu.model.Rasterizer;
-
 import com.cgvsu.model.TriangulatedModel;
 import com.cgvsu.model.VertexNormalsCalculator;
 import javafx.scene.canvas.GraphicsContext;
-
+import com.cgvsu.model.Material;
 import com.cgvsu.math.*;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Texture;
@@ -183,7 +182,10 @@ public class RenderEngine {
             final Light light,
             final int width,
             final int height,
-            Matrix4d modelMatrix4d)
+            Matrix4d modelMatrix4d,
+            boolean checkPolygonalGrid,
+            boolean checkLighting,
+            boolean checkActiveTexture)
     {
 
         Matrix4d modelMatrix = modelMatrix4d;
@@ -249,13 +251,15 @@ public class RenderEngine {
 
             // Check if the polygon is facing the camera
 //            if (polygonNormal.dot(cameraDirection) >= 0) {
-               rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints,  Color.BLUE, textureCoords, normals);
+               rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints,  Color.BLUE, textureCoords, normals, checkLighting, checkActiveTexture);
 
 
 
           // rasterizer.rasterizePolygonv2(graphicsContext, screenPoints,worldPoints, Color.BLUE,textureCoords,normals);
 
-     //      drawPolygonOutline(graphicsContext, screenPoints);
+           if (checkPolygonalGrid) {
+               drawPolygonOutline(graphicsContext, screenPoints);
+           }
 //            }
         }
     }
