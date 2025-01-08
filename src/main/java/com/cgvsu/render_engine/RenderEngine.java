@@ -186,13 +186,13 @@ public class RenderEngine {
             Matrix4d modelMatrix4d)
     {
 
-//        Matrix4d modelMatrix = modelMatrix4d;
-        Matrix4d modelMatrix = new Matrix4d(new float[][]
-                {{1,0,0,0},
-                {0,1,0,0},
-                {0,0,1,0},
-                {0,0,0,1}}
-                        );
+        Matrix4d modelMatrix = modelMatrix4d;
+//        Matrix4d modelMatrix = new Matrix4d(new float[][]
+//                {{1,0,0,0},
+//                {0,1,0,0},
+//                {0,0,1,0},
+//                {0,0,0,1}}
+//                        );
         Matrix4d viewMatrix = camera.getViewMatrix();
         Matrix4d projectionMatrix = camera.getProjectionMatrix();
 

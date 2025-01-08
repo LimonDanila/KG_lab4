@@ -81,10 +81,11 @@ public class GuiController {
     Alert messageInformation = new Alert(Alert.AlertType.INFORMATION);
 
     private ArrayList<Model> meshList = new ArrayList<>();
+    private ArrayList<Model> originMeshList = new ArrayList<>();
     private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
     private List<Integer> indexPolygonsDelete = new ArrayList<>();
     private Texture texture = null;
-    //    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+
     private Light light = new Light(new Vector3f(10,10,0), Color.WHITE);
 
     private Camera camera = new Camera(
@@ -156,6 +157,7 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             meshList.add(ObjReader.read(fileContent));
+            originMeshList.add(ObjReader.read(fileContent));
             TRSList.add(new Vector3f[] {new Vector3f(-40 * listView.getItems().size(), 0, 0),
             new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
             ObservableList<String> list = listView.getItems();
@@ -184,7 +186,7 @@ public class GuiController {
                         GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
                 System.out.println("Yes");
             } else {
-                ObjWriter.write(meshList.get(i), file);
+                ObjWriter.write(originMeshList.get(i), file);
                 System.out.println("No");
             }
             showMessage("Информация", "Модель сохранена", messageInformation);
@@ -227,6 +229,7 @@ public class GuiController {
             list.remove(index);
             listView.setItems(list);
             meshList.remove(index);
+            originMeshList.remove(index);
             TRSList.remove(index);
             for (int i = index; i < TRSList.size(); i++) {
                 Vector3f[] vectors = TRSList.get(i);
