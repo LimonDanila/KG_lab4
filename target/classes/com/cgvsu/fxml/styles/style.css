@@ -1,0 +1,6 @@
+.scrollBar {
+    -fx-background-radius: 5px;
+}
+.button {
+    -fx-background-color: linear-gradient(to bottom right, #696666, #969292);
+}

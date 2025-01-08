@@ -4,8 +4,9 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+
 <AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <HBox>
         <VBox>
@@ -26,14 +27,14 @@
             <ScrollPane prefHeight="870" prefWidth="450.0">
                 <VBox>
                     <HBox translateY="10">
-                        <Text translateX="55" text="Модели" />
-                        <Text translateX="127" text="Положение камеры" />
-                        <Text translateX="209" text="Свет" />
+                        <Text translateX="53" text="Модели" />
+                        <Text translateX="120" text="Положение камеры" />
+                        <Text translateX="200" text="Свет" />
                     </HBox>
                     <HBox translateY="15">
-                        <ListView fx:id="listView" prefHeight="200" prefWidth="150" onMouseClicked="#choiceModel"/>
-                        <ListView fx:id="listViewTwo" prefHeight="200" prefWidth="150"/>
-                        <ListView fx:id="listViewThree" prefHeight="200" prefWidth="150"/>
+                        <ListView styleClass="scrollBar" translateX="15" fx:id="listView" prefHeight="200" prefWidth="120" onMouseClicked="#choiceModel"/>
+                        <ListView styleClass="scrollBar" translateX="40" fx:id="listViewTwo" prefHeight="200" prefWidth="120"/>
+                        <ListView styleClass="scrollBar" translateX="65" fx:id="listViewThree" prefHeight="200" prefWidth="120"/>
                     </HBox>
                     <TitledPane text="Transformation" prefWidth="450" translateY="20">
                         <VBox>
@@ -55,12 +56,12 @@
                                 <TextField promptText="y" fx:id="scaleY"/>
                                 <TextField promptText="z" fx:id="scaleZ"/>
                             </HBox>
-                            <Button text="OK" onAction="#acceptChanges" />
+                            <Button translateY="5" text="OK" onAction="#acceptChanges" />
                         </VBox>
                     </TitledPane>
                     <TitledPane text="Работа с моделью" prefWidth="450" translateY="20">
                         <ScrollPane prefHeight="200">
-                            <VBox>
+                            <VBox translateX="5">
                                 <Button translateY="5" text="Закрузить текстуру модели"/>
                                 <CheckBox translateY="10" text="Включить триангуляцию"/>
                                 <CheckBox translateY="10" text="Включить текстуру"/>
@@ -100,4 +101,7 @@
         </VBox>
         <Canvas fx:id="canvas" height="870" onMouseDragged="#handlerMouseMove" onMousePressed="#handlerMouseClick" onScroll="#handlerScroll" width="1350" AnchorPane.topAnchor="30.0" />
     </HBox>
+    <stylesheets>
+        <URL value="@styles/style.css"/>
+    </stylesheets>
 </AnchorPane>
