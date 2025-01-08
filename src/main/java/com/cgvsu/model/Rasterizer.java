@@ -228,8 +228,21 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Rasterizer {
+
+    public class  ComparatorVecY implements Comparator<Vector2f> {
+        @Override
+        public int compare(Vector2f v1, Vector2f v2) {
+            if (v1.getY() < v2.getY()) return -1;
+            if (v1.getY() > v2.getY())  return 1;
+            return 0;
+        }
+    }
+
+
     private final int width;
     private final int height;
     private final float[] zBuffer;
@@ -297,7 +310,8 @@ public class Rasterizer {
                             worldPoints.get(0).getZ() * weight[0] + weight[1] * worldPoints.get(1).getZ() + weight[2] * worldPoints.get(2).getZ());
 
                     // If all the edge functions are positive, the point is inside the triangle
-                    if (p1p2P >= 0 && p2p3P >= 0 && p3p1P >= 0) {
+                    if (p1p2P >= 0 && p2p3P >= 0 && p3p1P >= 0)
+                    {
 
                         float z = interpolateZ(pt, p1, p2, p3, worldPoints.get(0), worldPoints.get(1), worldPoints.get(2));
                         int index = y * width + x;
@@ -341,6 +355,70 @@ public class Rasterizer {
         float weight_c = ABP / ABC;
 
         return new float[]{weight_a, weight_b, weight_c};
+    }
+
+    public void rasterizePolygonv2(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints, ArrayList<Vector3f> worldPoints, Color baseColor, ArrayList<Vector2f> textureCoords, ArrayList<Vector3f> normalVectors) {
+
+        if (screenPoints.size() < 3)
+            return;
+
+        ComparatorVecY comparatorVecY = new ComparatorVecY();
+        Collections.sort(screenPoints, comparatorVecY);
+
+        Vector2f p1 = screenPoints.get(0);
+        Vector2f p2 = screenPoints.get(1);
+        Vector2f p3 = screenPoints.get(2);
+
+        float total_height = p3.getY() - p1.getY();
+
+        for (int i = 0; i < total_height; i++) {
+            boolean second_half = (i > p2.getY() - p1.getY()) || (p2.getY() == p1.getY());
+            float segment_height = second_half ? p3.getY() - p2.getY() : p2.getY() - p1.getY();
+            float alpha = (float) i / total_height;
+            float beta = (float) (i - (second_half ? p2.getY() - p1.getY() : 0)) / segment_height; // be careful: with above conditions no division by zero here
+            Vector2f A = p1.add(p3.subtract(p1).multiply(alpha));
+
+            Vector2f B = second_half ? p2.add(p3.subtract(p2).multiply(beta)) :
+                    p1.add(p2.subtract(p1).multiply(beta));
+
+            if (A.getX() > B.getX()) {
+                Vector2f tmp = A;
+                A = B;
+                B = tmp;
+            }
+            for (int j = (int) A.getX(); j <= (int) B.getX(); j++) {
+
+                Vector2f pt = new Vector2f(j, (int) (p1.getY() + i));
+                float[] weight = calculate_baricentric_coeficients(p1, p2, p3, pt);
+
+
+                Vector3f P_world_coord = new Vector3f(worldPoints.get(0).getX() * weight[0] + weight[1] * worldPoints.get(1).getX() + weight[2] * worldPoints.get(2).getX(),
+                        worldPoints.get(0).getY() * weight[0] + weight[1] * worldPoints.get(1).getY() + weight[2] * worldPoints.get(2).getY(),
+                        worldPoints.get(0).getZ() * weight[0] + weight[1] * worldPoints.get(1).getZ() + weight[2] * worldPoints.get(2).getZ());
+
+
+                float z = interpolateZ(pt, p1, p2, p3, worldPoints.get(0), worldPoints.get(1), worldPoints.get(2));
+                int index = (int) (p1.getY() + i) * width + j;
+                try {
+                    if (z < zBuffer[index]) {
+                        zBuffer[index] = z;
+                        ArrayList<Light> lights = new ArrayList<>();
+                        lights.add(light);
+                        // Draw the pixel
+                        mt.setLights(lights);
+                        Color clNew = mt.useMaterial(weight[0], weight[1], weight[2], textureCoords, normalVectors, P_world_coord);
+                        graphicsContext.getPixelWriter().setColor(j, (int) (p1.getY() + i), clNew);
+
+                    }
+                } catch (Exception e) {
+                    //throw new RuntimeException(e);
+                }
+
+
+            }
+        }
+
+
     }
 }
 

@@ -247,7 +247,7 @@ public class RenderEngine {
 //            if (polygonNormal.dot(cameraDirection) >= 0) {
 //                rasterizer.rasterizePolygon(graphicsContext, screenPoints, worldPoints, textureCoords, normals, Color.BLUE);
 //            rasterizer.rasterizePolygon(graphicsContext, screenPoints, Color.BLUE);
-            rasterizer.rasterizePolygon(graphicsContext, screenPoints,worldPoints, Color.BLUE,textureCoords,normals);
+            rasterizer.rasterizePolygonv2(graphicsContext, screenPoints,worldPoints, Color.BLUE,textureCoords,normals);
 
             drawPolygonOutline(graphicsContext, screenPoints);
 //            }
