@@ -118,6 +118,7 @@ public class GuiController {
 
             if (!meshList.isEmpty()) {
                 for (int i = 0; i < meshList.size(); i++) {
+                    RenderEngine.initModel(meshList.get(i));
                     RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), (int) width, (int) height,
                             GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
                 }

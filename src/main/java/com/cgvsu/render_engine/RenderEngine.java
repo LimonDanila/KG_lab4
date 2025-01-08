@@ -1,6 +1,9 @@
 package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
+
+import com.cgvsu.model.TriangulatedModel;
+import com.cgvsu.model.VertexNormalsCalculator;
 import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.math.*;
@@ -53,5 +56,18 @@ public class RenderEngine {
                         resultPoints.get(0).getX(),
                         resultPoints.get(0).getY());
         }
+    }
+
+    private static void drawPolygonOutline(GraphicsContext graphicsContext, ArrayList<Vector2f> screenPoints) {
+        int nVertices = screenPoints.size();
+        for (int i = 0; i < nVertices; i++) {
+            Vector2f start = screenPoints.get(i);
+            Vector2f end = screenPoints.get((i + 1) % nVertices);
+            graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+        }
+    }
+    public static void initModel(Model mesh) {
+        TriangulatedModel.triangulateModel(mesh);
+        VertexNormalsCalculator.calculateNormals(mesh);
     }
 }
