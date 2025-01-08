@@ -81,10 +81,6 @@ public class GuiController {
     private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
     private List<Integer> indexPolygonsDelete = new ArrayList<>();
 
-    private float radius = 100;
-
-    private Model mesh = null;
-
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
@@ -94,7 +90,7 @@ public class GuiController {
 
     private Vector2f position;
 
-    private Vector3f positionC = new Vector3f(radius, 0, 0);
+    private Vector3f positionC = new Vector3f(100, 0, 0);
 
     private float phiX = 0;
     private float phiZ = 0;
@@ -220,6 +216,11 @@ public class GuiController {
             listView.setItems(list);
             meshList.remove(index);
             TRSList.remove(index);
+            for (int i = index; i < TRSList.size(); i++) {
+                Vector3f[] vectors = TRSList.get(i);
+                vectors[0] = vectors[0].add(new Vector3f(40, 0, 0));
+                TRSList.set(i, vectors);
+            }
         }
     }
 
@@ -261,15 +262,13 @@ public class GuiController {
     public void handlerMouseMove(MouseEvent actionEvent) {
         if (actionEvent.isPrimaryButtonDown()) {
             positionC = positionC.add(new Vector3f((float) 0, (float) (actionEvent.getX() - position.getX()), (float) (actionEvent.getY() - position.getY())));
-            float x = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180));
-            float y = (float) (positionC.getX() * 1 * Math.sin((positionC.getZ() * Math.PI) / 180));
-            float z = (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180));
-            Vector3f newPos = new Vector3f(x, y, z);
+            Vector3f newPos = getNewPos();
             camera.setPosition(newPos);
             position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
         } else if (actionEvent.isSecondaryButtonDown()){
-            camera.movePosition(new Vector3f((float) actionEvent.getX() - position.getX(), (float) actionEvent.getY() - position.getY(), 0));
-            camera.moveTarget(new Vector3f((float) actionEvent.getX() - position.getX(), (float) actionEvent.getY() - position.getY(), 0));
+            float cos = getCos();
+            camera.movePosition(new Vector3f((float) (actionEvent.getX() - position.getX()) * cos, (float) actionEvent.getY() - position.getY(), (float) ((position.getX() - actionEvent.getX()) * (1-cos))));
+            camera.moveTarget(new Vector3f((float) (actionEvent.getX() - position.getX()) * cos, (float) actionEvent.getY() - position.getY(), (float) ((position.getX() - actionEvent.getX()) * (1-cos))));
             position = new Vector2f((float) actionEvent.getX(), (float) actionEvent.getY());
         }
 //        System.out.println(camera.getPosition().getX() + " " + camera.getPosition().getY() + " " + camera.getPosition().getZ());
@@ -282,10 +281,23 @@ public class GuiController {
         } else {
             positionC = positionC.add(new Vector3f(-TRANSLATION, 0, 0));
         }
-        Vector3f newPos = new Vector3f((float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180)),
-                (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.sin((positionC.getZ() * Math.PI) / 180)),
-                (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180)));
-        camera.setPosition(newPos);
+        camera.setPosition(getNewPos());
+    }
+
+    private float getCos() {
+        Vector3f vectorZ = new Vector3f(0, 0, 1);
+        Vector3f targetVector = new Vector3f(camera.getPosition().getX() - camera.getTarget().getX(), camera.getPosition().getY() - camera.getTarget().getY(), camera.getPosition().getZ() - camera.getTarget().getZ());
+        float cos = (float) ((vectorZ.getX() * targetVector.getX() + vectorZ.getY() * targetVector.getY() + vectorZ.getZ() * targetVector.getZ()) /
+                (Math.sqrt(vectorZ.getX() * vectorZ.getX() + vectorZ.getY() * vectorZ.getY() + vectorZ.getZ() * vectorZ.getZ()) *
+                        Math.sqrt(targetVector.getX() * targetVector.getX() + targetVector.getY() * targetVector.getY() + targetVector.getZ() * targetVector.getZ())));
+        return cos;
+    }
+
+    private Vector3f getNewPos() {
+        float x = (float) (positionC.getX() * Math.sin((positionC.getY() * Math.PI) / 180) * Math.cos((positionC.getZ() * Math.PI) / 180));
+        float y = (float) (positionC.getX() * 1 * Math.sin((positionC.getZ() * Math.PI) / 180));
+        float z = (float) (positionC.getX() * Math.cos((positionC.getY() * Math.PI) / 180));
+        return new Vector3f(x, y, z);
     }
 
     public static List<Integer> extractIntegersFromString(String input) {
