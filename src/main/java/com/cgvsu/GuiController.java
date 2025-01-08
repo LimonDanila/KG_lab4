@@ -1,6 +1,8 @@
 package com.cgvsu;
 
 import com.cgvsu.math.Vector2f;
+import com.cgvsu.model.Light;
+import com.cgvsu.model.Texture;
 import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.render_engine.GraphicConveyor;
 import com.cgvsu.render_engine.RenderEngine;
@@ -19,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -80,10 +83,12 @@ public class GuiController {
     private ArrayList<Model> meshList = new ArrayList<>();
     private ArrayList<Vector3f[]> TRSList = new ArrayList<>();
     private List<Integer> indexPolygonsDelete = new ArrayList<>();
+    private Texture texture = null;
+    //    private Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+    private Light light = new Light(new Vector3f(10,10,0), Color.WHITE);
 
     private float radius = 100;
 
-    private Model mesh = null;
 
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -122,8 +127,11 @@ public class GuiController {
 
             if (!meshList.isEmpty()) {
                 for (int i = 0; i < meshList.size(); i++) {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), (int) width, (int) height,
-                            GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
+                    if (meshList.get(i) != null) {
+                        RenderEngine.initModel(meshList.get(i));
+                        RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), texture, light, (int) width, (int) height,
+                                GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]));
+                    }
                 }
             }
         });
