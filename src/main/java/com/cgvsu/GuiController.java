@@ -340,6 +340,7 @@ private void initialize() {
             list.remove(index);
             listViewModel.setItems(list);
             meshList.remove(index);
+            textures.remove(index);
             originMeshList.remove(index);
             TRSList.remove(index);
             for (int i = index; i < TRSList.size(); i++) {
