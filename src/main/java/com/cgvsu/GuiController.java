@@ -94,6 +94,7 @@ public class GuiController {
     private List<Integer> indexPolygonsDelete = new ArrayList<>();
     private Texture texture = null;
 
+    private ArrayList<Texture> textures = new ArrayList<>();
     private Light light = new Light(new Vector3f(10,10,0), Color.WHITE);
 
     private Camera camera = new Camera(
@@ -116,38 +117,96 @@ public class GuiController {
         alert.showAndWait();
     }
 
-    @FXML
-    private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(canvas.getWidth()));
-        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(canvas.getHeight()));
+//    @FXML
+//    private void initialize() {
+//        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(canvas.getWidth()));
+//        anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(canvas.getHeight()));
+//
+//        timeline = new Timeline();
+//        timeline.setCycleCount(Animation.INDEFINITE);
+//
+//        KeyFrame frame = new KeyFrame(Duration.millis(100), event -> {
+//            double width = canvas.getWidth();
+//            double height = canvas.getHeight();
+//
+//            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+//            camera.setAspectRatio((float) (width / height));
+//
+//            if (!meshList.isEmpty()) {
+//                for (int i = 0; i < meshList.size(); i++) {
+//
+//                    if (meshList.get(i) != null) {
+//                        RenderEngine.initModel(meshList.get(i));
+//                        RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), texture, light, (int) width, (int) height,
+//                                GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]), checkTriangulated.isSelected(), checkLighting.isSelected(), checkActiveTexture.isSelected());
+//                    }
+//
+//                }
+//            }
+//          // System.out.println("GuiController.initialize");
+//        });
+//
+//        timeline.getKeyFrames().add(frame);
+//        timeline.play();
+//    }
+@FXML
+private void initialize() {
+    anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(canvas.getWidth()));
+    anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(canvas.getHeight()));
 
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
+    timeline = new Timeline();
+    timeline.setCycleCount(Animation.INDEFINITE);
 
-        KeyFrame frame = new KeyFrame(Duration.millis(100), event -> {
-            double width = canvas.getWidth();
-            double height = canvas.getHeight();
+    KeyFrame frame = new KeyFrame(Duration.millis(100), event -> {
+        double width = canvas.getWidth();
+        double height = canvas.getHeight();
 
-            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
+        canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+        camera.setAspectRatio((float) (width / height));
 
-            if (!meshList.isEmpty()) {
-                for (int i = 0; i < meshList.size(); i++) {
-
-                    if (meshList.get(i) != null) {
-                        RenderEngine.initModel(meshList.get(i));
-                        RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), texture, light, (int) width, (int) height,
-                                GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]), checkTriangulated.isSelected(), checkLighting.isSelected(), checkActiveTexture.isSelected());
-                    }
-
+        if (!meshList.isEmpty()) {
+            for (int i = 0; i < meshList.size(); i++) {
+                if (meshList.get(i) != null) {
+                    RenderEngine.initModel(meshList.get(i));
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, meshList.get(i), textures.get(i), light, (int) width, (int) height,
+                            GraphicConveyor.translateRotateScale(TRSList.get(i)[0], TRSList.get(i)[1], TRSList.get(i)[2]), checkTriangulated.isSelected(), checkLighting.isSelected(), checkActiveTexture.isSelected());
                 }
             }
-          // System.out.println("GuiController.initialize");
-        });
+        }
+    });
 
-        timeline.getKeyFrames().add(frame);
-        timeline.play();
-    }
+    timeline.getKeyFrames().add(frame);
+    timeline.play();
+}
+
+
+//    @FXML
+//    private void onOpenModelMenuItemClick() {
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+//        fileChooser.setTitle("Load Model");
+//
+//        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+//        if (file == null) {
+//            return;
+//        }
+//
+//        Path fileName = Path.of(file.getAbsolutePath());
+//
+//        try {
+//            String fileContent = Files.readString(fileName);
+//            meshList.add(ObjReader.read(fileContent));
+//            originMeshList.add(ObjReader.read(fileContent));
+//            TRSList.add(new Vector3f[] {new Vector3f(-40 * listViewModel.getItems().size(), 0, 0),
+//            new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
+//            ObservableList<String> list = listViewModel.getItems();
+//            list.add(file.getName());
+//            listViewModel.setItems(list);
+//            // todo: обработка ошибок
+//        } catch (IOException exception) {
+//            showMessage("Ошибка", "Не удалось найти файл", messageError);
+//        }
+//    }
 
     @FXML
     private void onOpenModelMenuItemClick() {
@@ -167,7 +226,8 @@ public class GuiController {
             meshList.add(ObjReader.read(fileContent));
             originMeshList.add(ObjReader.read(fileContent));
             TRSList.add(new Vector3f[] {new Vector3f(-40 * listViewModel.getItems().size(), 0, 0),
-            new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
+                    new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)});
+            textures.add(null);
             ObservableList<String> list = listViewModel.getItems();
             list.add(file.getName());
             listViewModel.setItems(list);
@@ -176,6 +236,7 @@ public class GuiController {
             showMessage("Ошибка", "Не удалось найти файл", messageError);
         }
     }
+
 
     @FXML
     private void onSaveModelMenuItemClick() {
@@ -203,6 +264,24 @@ public class GuiController {
         }
     }
 
+//    @FXML
+//    private void onOpenTextureMenuItemClick() {
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.bmp"));
+//        fileChooser.setTitle("Load Texture");
+//
+//        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+//        if (file == null) {
+//            return;
+//        }
+//
+//        int index = listViewModel.getFocusModel().getFocusedIndex();
+//        if (index >= 0) {
+//
+//            texture = new Texture(file.getAbsolutePath());
+//        }
+//    }
+
     @FXML
     private void onOpenTextureMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
@@ -214,8 +293,13 @@ public class GuiController {
             return;
         }
 
-        texture = new Texture(file.getAbsolutePath());
+        int index = listViewModel.getFocusModel().getFocusedIndex();
+        if (index >= 0) {
+            Texture texture = new Texture(file.getAbsolutePath());
+            textures.set(index, texture);
+        }
     }
+
 
     @FXML
     public void acceptChanges(ActionEvent actionEvent) {
