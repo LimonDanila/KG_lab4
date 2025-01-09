@@ -102,6 +102,8 @@ public class GuiController {
             new Vector3f(0, 0, 0),
             1.0F, 1, 0.01F, 100);
 
+//    private Light light = new Light(camera.getPosition(),Color.WHITE);
+
     private Timeline timeline;
 
     private Vector2f position;

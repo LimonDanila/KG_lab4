@@ -207,6 +207,7 @@ public class RenderEngine {
 //        Matrix4d modelViewProjectionMatrix = projectionMatrix.multiply(viewMatrix).multiply(modelMatrix);
 
         Rasterizer rasterizer = new Rasterizer(width, height,camera);
+        light.setPosition(camera.getPosition());
         rasterizer.setTexture(texture);
         rasterizer.setLight(light);
         rasterizer.clearZBuffer(); // Очистка Z-буфера перед рендерингом
