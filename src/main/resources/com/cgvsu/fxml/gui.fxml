@@ -32,7 +32,7 @@
                     </HBox>
                     <HBox translateY="15">
                         <ListView styleClass="scrollBar" translateX="15" fx:id="listViewModel" prefHeight="200" prefWidth="120" onMouseClicked="#choiceModel"/>
-                        <ListView styleClass="scrollBar" translateX="40" fx:id="listViewCamera" prefHeight="200" prefWidth="120" onMouseClicked="#choiceCamera"/>
+                        <ListView styleClass="scrollBar" translateX="40" fx:id="listViewCamera" prefHeight="200" prefWidth="120" />
                     </HBox>
                     <TitledPane text="Transformation" prefWidth="450" translateY="20">
                         <VBox>
@@ -89,8 +89,11 @@
                     <TitledPane text="Работа с камерой" prefWidth="450" translateY="20">
                         <ScrollPane prefHeight="100">
                             <VBox translateX="5" translateY="5">
-                                <Button text="Добавить камеру"/>
-                                <Button translateX="5" translateY="2"  text="Удалить камеру"/>
+                                <HBox>
+                                    <Button text="Добавить камеру" onAction="#addCamera"/>
+                                </HBox>
+                                <Button translateX="5" translateY="2"  text="Удалить камеру" onAction="#deleteCamera"/>
+                                <Button translateX="5" translateY="2"  text="Сменить камеру" onAction="#choiceCamera"/>
                             </VBox>
                         </ScrollPane>
                     </TitledPane>

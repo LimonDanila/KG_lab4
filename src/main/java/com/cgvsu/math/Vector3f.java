@@ -122,9 +122,5 @@ public class Vector3f extends Vector {
                 arr1[0] * arr2[1] - arr1[1] * arr2[0]
         );
     }
-
-    public Vector4f toVector4(float w) {
-        return new Vector4f(vector[0], vector[1], vector[2], w);
-    }
 }
 

@@ -8,6 +8,7 @@ public class Camera {
     public Camera(
             final Vector3f position,
             final Vector3f target,
+            final Vector3f positionC,
             final float fov,
             final float aspectRatio,
             final float nearPlane,
@@ -18,6 +19,7 @@ public class Camera {
         this.aspectRatio = aspectRatio;
         this.nearPlane = nearPlane;
         this.farPlane = farPlane;
+        this.positionC = positionC;
     }
 
     public void setPosition(final Vector3f position) {
@@ -56,10 +58,32 @@ public class Camera {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
+    public Vector3f getPositionC() {
+        return positionC;
+    }
+
+    public Vector2f getThisPosition() {
+        return thisPosition;
+    }
+
+    public void addToPositionC(Vector3f vector) {
+        positionC = positionC.add(vector);
+    }
+
+    public void setPositionC(Vector3f positionC) {
+        this.positionC = positionC;
+    }
+
+    public void setThisPosition(Vector2f thisPosition) {
+        this.thisPosition = thisPosition;
+    }
+
     private Vector3f position;
     private Vector3f target;
     private float fov;
     private float aspectRatio;
     private float nearPlane;
     private float farPlane;
+    private Vector3f positionC;
+    private Vector2f thisPosition;
 }
